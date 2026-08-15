@@ -1,14 +1,36 @@
 import os
+import threading
+from flask import Flask
 import telebot
+from telebot import types
 import pypdfium2 as pdfium
 
-# توکنی بۆتەکەت لێرە دایبنێ
+# دروستکردنی سێرڤەری خۆڕایی بۆ Render
+app = Flask(name)
+
+@app.route('/')
+def home():
+    return "Bot is running!"
+
+def run_flask():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
+
+# توکنی بۆتەکەت
 TOKEN = "7880955033:AAE7NS-_TbuCQcuN1SJewnFtdmiFuNJ2PyU"
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-    bot.reply_to(message, "سڵاو! فایلی PDFم بۆ بنێرە تا بۆت بپەڕێنمەوە بۆ وێنە (JPG).")
+    first_name = message.from_user.first_name
+    welcome_text = (
+        f"سڵاو <b>{first_name}</b>\n\n"
+        "کاری من گۆرینی وێنەیە بۆ PDF وە بە پێچەوانەشەوە ئەتوانی تەنها وێنەیەک یان فایلێک بنێرە بنێرە 🗳"
+    )
+    markup = types.InlineKeyboardMarkup()
+    btn_share = types.InlineKeyboardButton("بۆتەکە بڵاوبکەرەوە ↗️", switch_inline_query="")
+    markup.add(btn_share)
+    bot.reply_to(message, welcome_text, reply_markup=markup, parse_mode='HTML')
 
 @bot.message_handler(content_types=['document'])
 def handle_docs(message):
@@ -18,7 +40,6 @@ def handle_docs(message):
             return
 
         msg = bot.reply_to(message, "فایلەکە لە وەرگرتندایە و دەکرێتە وێنە، تکایە چاوەڕێ بکە...")
-        
         file_info = bot.get_file(message.document.file_id)
         downloaded_file = bot.download_file(file_info.file_path)
         
@@ -27,7 +48,6 @@ def handle_docs(message):
             new_file.write(downloaded_file)
 
         pdf = pdfium.PdfDocument(pdf_path)
-        
         for i, page in enumerate(pdf):
             image = page.render(scale=2).to_pil()
             img_path = f"page_{i+1}.jpg"
@@ -48,5 +68,8 @@ def handle_docs(message):
     except Exception as e:
         bot.reply_to(message, f"ڕووداوێک ڕوویدا لە کاتی پرۆسەکەدا: {str(e)}")
 
-print("Bot is running...")
-bot.infinity_polling()
+if name == "main":
+    # داگیرساندنی پۆرتی خۆڕایی
+    threading.Thread(target=run_flask).start()
+    print("Bot is running...")
+    bot.infinity_polling()
