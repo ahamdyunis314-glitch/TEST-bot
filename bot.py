@@ -3,7 +3,7 @@ import telebot
 from PIL import Image
 from pdf2image import convert_from_path
 
-BOT_TOKEN = "7880955033:AAGfk0-THionUx9surZwnda_CjC4YBM7fvE"
+BOT_TOKEN = "7880955033:AAE7NS-_TbuCQcuN1SJewnFtdmiFuNJ2PyU"
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
