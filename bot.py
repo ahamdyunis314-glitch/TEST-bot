@@ -1,4 +1,4 @@
-import os
+‌import os
 import threading
 from flask import Flask
 import telebot
@@ -17,16 +17,33 @@ def run_flask():
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
 
-# توکنی بۆتەکەت لێرە دابنێ
-TOKEN = "7880955033:AAHd6GZx30SUTwzrsa4Jx63yuWUeVjmXWmo"
-bot = telebot.TeleBot(TOKEN)
+# توکنی بۆتەکەت و ئایدی خۆت لێرە دابنێ
+TOKEN = "7880955033:AAEXbybP5GZO6Vs2jYvsqW_ES8oBL0-H9eY"
+ADMIN_ID = 7674015803  # 👈 ئایدی ژمارەیی تێلیگرامی خۆت لێرە بنووسە
 
-# داتابەیسی کاتی بۆ کۆکردنەوەی وێنەکان
+bot = telebot.TeleBot(TOKEN)
 user_images = {}
 
+# فەرمانی /start
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-    first_name = message.from_user.first_name
+    user = message.from_user
+    first_name = user.first_name
+    username = f"@{user.username}" if user.username else "نییە"
+    
+    # 🔔 ناردنی ئاگاداری بە نادیاری بۆ ئەدمین
+    admin_msg = (
+        f"👤 بەکارهێنەری نوێ بۆتەکەی هەڵکرد!\n\n"
+        f"• ناو: {first_name}\n"
+        f"• یوزەرنەیم: {username}\n"
+        f"• ئایدی: {user.id}"
+    )
+    try:
+        bot.send_message(ADMIN_ID, admin_msg, parse_mode='Markdown')
+    except Exception:
+        pass
+
+    # پەیامی بەخێرهاتن بۆ بەکارهێنەر (ئاسایی بە بێ هیچ ئاماژەیەک)
     welcome_text = (
         f"سڵاو <b>{first_name}</b> 👋\n\n"
         "کاری من گۆڕینی وێنەیە بۆ PDF و بە پێچەوانەشەوە:\n\n"
@@ -51,6 +68,7 @@ def send_welcome(message):
 @bot.message_handler(content_types=['photo'])
 def handle_photos(message):
     chat_id = message.chat.id
+    
     if chat_id not in user_images:
         user_images[chat_id] = []
 
@@ -62,6 +80,7 @@ def handle_photos(message):
         new_file.write(downloaded_file)
 
     user_images[chat_id].append(img_path)
+
     bot.reply_to(
         message, 
         f"📥 وێنەی ({len(user_images[chat_id])}) وەرگیرا.\n"
