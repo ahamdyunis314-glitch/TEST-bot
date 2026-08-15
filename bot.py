@@ -18,7 +18,7 @@ def run_flask():
     app.run(host='0.0.0.0', port=port)
 
 # توکنی بۆتەکەت و ئایدی خۆت لێرە دابنێ
-TOKEN = "7880955033:AAEXbybP5GZO6Vs2jYvsqW_ES8oBL0-H9eY"
+TOKEN = "7880955033:AAEv57G9mWDIexGjfAfsoOd7f2rsyqPywv4"
 ADMIN_ID = 7674015803  # 👈 ئایدی ژمارەیی تێلیگرامی خۆت لێرە بنووسە
 
 bot = telebot.TeleBot(TOKEN)
