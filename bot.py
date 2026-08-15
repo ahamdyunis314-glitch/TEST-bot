@@ -17,7 +17,7 @@ def run_flask():
     app.run(host='0.0.0.0', port=port)
 
 # توکنی بۆتەکەت
-TOKEN = "7880955033:AAE7NS-_TbuCQcuN1SJewnFtdmiFuNJ2PyU"
+TOKEN = "7880955033:AAH_s-_annj1tK22xpXL55Wk-B9ryGx1E5Q"
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start', 'help'])
