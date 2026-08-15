@@ -6,7 +6,7 @@ from telebot import types
 import pypdfium2 as pdfium
 
 # دروستکردنی سێرڤەری خۆڕایی بۆ Render
-app = Flask(name)
+app = Flask(__name__)
 
 @app.route('/')
 def home():
