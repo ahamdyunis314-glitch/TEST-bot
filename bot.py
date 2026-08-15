@@ -23,13 +23,17 @@ bot = telebot.TeleBot(TOKEN)
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
     first_name = message.from_user.first_name
+
     welcome_text = (
         f"سڵاو <b>{first_name}</b>\n\n"
         "کاری من گۆرینی وێنەیە بۆ PDF وە بە پێچەوانەشەوە ئەتوانی تەنها وێنەیەک یان فایلێک بنێرە بنێرە 🗳"
     )
+    
     markup = types.InlineKeyboardMarkup()
-    btn_share = types.InlineKeyboardButton("بۆتەکە بڵاوبکەرەوە ↗️", switch_inline_query="")
+    # گۆڕینی switch_inline_query بۆ url بۆ ئەوەی هەڵە نەدات
+    btn_share = types.InlineKeyboardButton("بۆتەکە بڵاوبکەرەوە ↗️", url=f"https://t.me/share/url?url=https://t.me/{bot.get_me().username}")
     markup.add(btn_share)
+    
     bot.reply_to(message, welcome_text, reply_markup=markup, parse_mode='HTML')
 
 @bot.message_handler(content_types=['document'])
