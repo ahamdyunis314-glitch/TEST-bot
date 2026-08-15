@@ -139,7 +139,7 @@ def handle_docs(message):
     except Exception as e:
         bot.reply_to(message, f"❌ هەڵەیەک ڕوویدا: {str(e)}")
 
-if name == "main":
+if __name__ == "__main__":
     threading.Thread(target=run_flask).start()
     print("Bot is running...")
     bot.infinity_polling()
